@@ -19,10 +19,9 @@ public class ReverseClient {
  
         try (Socket socket = new Socket(hostname, port)) {
  
-            //OutputStream output = socket.getOutputStream();
-            //output = socket.getOutputStream();
+            OutputStream output2 = socket.getOutputStream();
             output = new DataOutputStream(socket.getOutputStream());
-            PrintWriter writer = new PrintWriter(output, true);
+            PrintWriter writer = new PrintWriter(output2, true);
 
             Console console = System.console();
             String text;
@@ -32,9 +31,9 @@ public class ReverseClient {
 
                 //File file = new File("Arq.txt");
                 
-                sendFile(text);
-
                 writer.println(text);
+                
+                sendFile(text);
  
                 InputStream input = socket.getInputStream();
                 BufferedReader reader = new BufferedReader(new InputStreamReader(input));

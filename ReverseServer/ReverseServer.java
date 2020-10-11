@@ -25,14 +25,10 @@ public class ReverseServer {
                 Socket socket = serverSocket.accept();
                 System.out.println("New client connected");
  
-                //input = socket.getInputStream();
                 input = new DataInputStream(socket.getInputStream());
-                BufferedReader reader = new BufferedReader(new InputStreamReader(input));
- 
-                // OutputStream output = socket.getOutputStream();
-                // output = new DataOutputStream(socket.getOutputStream());
-                //PrintWriter writer = new PrintWriter(output, true);
- 
+                BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                OutputStream output = socket.getOutputStream();
+                PrintWriter writer = new PrintWriter(output, true);
  
                 String pathName;
  
@@ -42,7 +38,7 @@ public class ReverseServer {
                     //String reverseText = new StringBuilder(text).reverse().toString();
                     System.out.println("This was received from client ");
 
-                    //writer.println("Server:" + text);
+                    writer.println("Server:" + pathName);
  
                 } while (!pathName.equals("bye"));
  
@@ -56,7 +52,7 @@ public class ReverseServer {
     }
 
     public static void receiveFile(String file) throws IOException {
-        FileOutputStream fileOut = new FileOutputStream(file);
+        FileOutputStream fileOut = new FileOutputStream("novoArq.txt");
         byte[] buf = new byte[Short.MAX_VALUE];
         int bytesSent;        
         while( (bytesSent = input.readShort()) != -1 ) {
