@@ -9,6 +9,8 @@ import java.net.*;
  * @author www.codejava.net
  */
 public class ReverseServer {
+
+    private static DataInputStream input;
  
     public static void main(String[] args) {
         if (args.length < 1) return;
@@ -23,21 +25,26 @@ public class ReverseServer {
                 Socket socket = serverSocket.accept();
                 System.out.println("New client connected");
  
-                InputStream input = socket.getInputStream();
+                //input = socket.getInputStream();
+                input = new DataInputStream(socket.getInputStream());
                 BufferedReader reader = new BufferedReader(new InputStreamReader(input));
  
-                OutputStream output = socket.getOutputStream();
-                PrintWriter writer = new PrintWriter(output, true);
+                // OutputStream output = socket.getOutputStream();
+                // output = new DataOutputStream(socket.getOutputStream());
+                //PrintWriter writer = new PrintWriter(output, true);
  
  
-                String text;
+                String pathName;
  
                 do {
-                    text = reader.readLine();
-                    String reverseText = new StringBuilder(text).reverse().toString();
-                    writer.println("Server: " + reverseText);
+                    pathName = reader.readLine();
+                    receiveFile(pathName);
+                    //String reverseText = new StringBuilder(text).reverse().toString();
+                    System.out.println("This was received from client ");
+
+                    //writer.println("Server:" + text);
  
-                } while (!text.equals("bye"));
+                } while (!pathName.equals("bye"));
  
                 socket.close();
             }
@@ -47,4 +54,15 @@ public class ReverseServer {
             ex.printStackTrace();
         }
     }
+
+    public static void receiveFile(String file) throws IOException {
+        FileOutputStream fileOut = new FileOutputStream(file);
+        byte[] buf = new byte[Short.MAX_VALUE];
+        int bytesSent;        
+        while( (bytesSent = input.readShort()) != -1 ) {
+            input.readFully(buf,0,bytesSent);
+            fileOut.write(buf,0,bytesSent);
+        }
+        fileOut.close();
+    }   
 }
